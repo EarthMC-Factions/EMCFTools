@@ -1,0 +1,7 @@
+main: dev.warriorrr.dynmapunhider.DynmapUnhider
+api-version: 1.16
+author: Warriorrr
+name: DynmapUnhider
+prefix: DynmapUnhider
+version: 1.0.0
+depend: [dynmap]
