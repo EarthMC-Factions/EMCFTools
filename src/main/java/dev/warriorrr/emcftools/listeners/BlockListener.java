@@ -57,7 +57,7 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onOpenChest(PlayerInteractEvent event) {
-        if ((event.getClickedBlock().getType() == Material.CHEST || event.getClickedBlock().getType() == Material.TRAPPED_CHEST) && event.getClickedBlock().getY() == 0) {
+        if (isContainter(event.getClickedBlock().getType()) && event.getClickedBlock().getY() == 0) {
             event.getPlayer().sendMessage(prefix + ChatColor.RED + " You cannot interact with this block at this location.");
             event.getClickedBlock().setType(Material.BEDROCK);
         }
@@ -103,6 +103,17 @@ public class BlockListener implements Listener {
             case CAULDRON:
             case CONDUIT:
             case BELL:
+                return true;
+            default:
+                return false;
+        }
+    }
+    
+    private boolean isContainter(Material material) {
+        switch(material) {
+            case CHEST:
+            case TRAPPED_CHEST:
+            case BARREL:
                 return true;
             default:
                 return false;
