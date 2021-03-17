@@ -5,13 +5,15 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-//import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -55,13 +57,23 @@ public class BlockListener implements Listener {
         }
     }
 
-    //@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    //public void onOpenChest(PlayerInteractEvent event) {
-    //    if (isContainter(event.getClickedBlock().getType()) && event.getClickedBlock().getY() == 0) {
-    //        event.getPlayer().sendMessage(prefix + ChatColor.RED + " You cannot interact with this block at this location.");
-    //        event.getClickedBlock().setType(Material.BEDROCK);
-    //    }
-    //}
+    /*
+    * Replace containers with bedrock when they get opened.
+    */
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onOpenChest(PlayerInteractEvent event) {
+        if (isContainter(event.getClickedBlock().getType()) && event.getClickedBlock().getY() == 0) {
+            event.getPlayer().sendMessage(prefix + ChatColor.RED + " You cannot interact with this block at this location.");
+            Container container = (Container) event.getClickedBlock().getState();
+            for (ItemStack item : container.getInventory().getContents()) {
+                if (item != null) {
+                    event.getClickedBlock().getWorld().dropItem(event.getClickedBlock().getLocation().add(0, 1, 0), item);
+                }
+            }
+            container.getInventory().clear();
+            event.getClickedBlock().setType(Material.BEDROCK);  
+        }
+    }
 
     private boolean isBlockEntity(Material material) {
         if (Tag.SIGNS.isTagged(material) || Tag.WALL_SIGNS.isTagged(material) || Tag.BANNERS.isTagged(material) || Tag.SHULKER_BOXES.isTagged(material))
@@ -109,7 +121,6 @@ public class BlockListener implements Listener {
         }
     }
     
-    @SuppressWarnings("unused")
     private boolean isContainter(Material material) {
         switch(material) {
             case CHEST:
