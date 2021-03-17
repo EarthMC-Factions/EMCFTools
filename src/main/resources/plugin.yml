@@ -3,5 +3,14 @@ api-version: 1.16
 author: Warriorrr
 name: EMCFTools
 prefix: EMCFTools
-version: 0.1.2
+version: 0.1.3
 depend: [dynmap]
+
+commands:
+  suicide:
+    description: Allows the user to suicide.
+
+permissions:
+  emcftools.suicide:
+    default: true
+    description: User is able to use /suicide.
