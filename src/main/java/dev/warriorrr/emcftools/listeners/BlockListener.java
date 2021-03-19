@@ -4,16 +4,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Container;
+import org.bukkit.block.data.type.Leaves;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
-import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -54,24 +54,28 @@ public class BlockListener implements Listener {
             event.getPlayer().sendMessage(prefix + ChatColor.RED + " You cannot break this block at this location.");
             event.setCancelled(true);
             event.getBlock().setType(Material.BEDROCK);
-        }
-    }
-
-    /*
-    * Replace containers with bedrock when they get opened.
-    */
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onOpenChest(PlayerInteractEvent event) {
-        if (isContainter(event.getClickedBlock().getType()) && event.getClickedBlock().getY() == 0) {
-            event.getPlayer().sendMessage(prefix + ChatColor.RED + " You cannot interact with this block at this location.");
-            Container container = (Container) event.getClickedBlock().getState();
-            for (ItemStack item : container.getInventory().getContents()) {
-                if (item != null) {
-                    event.getClickedBlock().getWorld().dropItem(event.getClickedBlock().getLocation().add(0, 1, 0), item);
+        } else if (Tag.LOGS.isTagged(event.getBlock().getType())) {
+            int blockX = (int) event.getBlock().getLocation().getX();
+            int blockY = (int) event.getBlock().getLocation().getY();
+            int blockZ = (int) event.getBlock().getLocation().getZ();
+            World world = event.getBlock().getWorld();
+            int radius = 4;
+            for (int x = blockX - radius; x <= blockX + radius; x++) {
+                for (int y = blockY - radius; y <= blockY + radius; y++) {
+                    for (int z = blockZ - radius; z <= blockZ + radius; z++) {
+                        Block block = world.getBlockAt(x, y, z);
+                        if (Tag.LEAVES.isTagged(block.getType())) {
+                            BlockState blockState = block.getState();
+                            Leaves leafBlock = ((Leaves) blockState.getBlockData());
+                            if (leafBlock.isPersistent()) {
+                                leafBlock.setPersistent(false);
+                                blockState.setBlockData(leafBlock);
+                                block.setBlockData(blockState.getBlockData());
+                            }
+                        }
+                    }
                 }
             }
-            container.getInventory().clear();
-            event.getClickedBlock().setType(Material.BEDROCK);  
         }
     }
 
@@ -115,20 +119,6 @@ public class BlockListener implements Listener {
             case CAULDRON:
             case CONDUIT:
             case BELL:
-                return true;
-            default:
-                return false;
-        }
-    }
-    
-    private boolean isContainter(Material material) {
-        switch(material) {
-            case CHEST:
-            case TRAPPED_CHEST:
-            case BARREL:
-            case HOPPER:
-            case DROPPER:
-            case DISPENSER:
                 return true;
             default:
                 return false;
