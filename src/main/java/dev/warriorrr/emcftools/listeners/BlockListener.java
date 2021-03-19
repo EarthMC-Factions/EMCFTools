@@ -28,7 +28,8 @@ import java.util.List;
 
 public class BlockListener implements Listener {
     /*
-    * Prevent nether portals from breaking bedrock
+    * Prevent nether portals from breaking bedrock.
+    * Prevent nether portals being used to raid other factions.
     */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPortalCreate(PortalCreateEvent event) {
