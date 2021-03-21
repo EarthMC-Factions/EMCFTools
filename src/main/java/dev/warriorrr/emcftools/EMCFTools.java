@@ -52,19 +52,19 @@ public class EMCFTools extends JavaPlugin implements Listener {
         Bukkit.addRecipe(tubeCoral);
 
         ShapedRecipe brainCoral = new ShapedRecipe(new NamespacedKey(this, "emcf_brainCoral"), new ItemStack(Material.BRAIN_CORAL_BLOCK));
-        tubeCoral.shape("CC", "CC").setIngredient('C', Material.BRAIN_CORAL);
+        brainCoral.shape("CC", "CC").setIngredient('C', Material.BRAIN_CORAL);
         Bukkit.addRecipe(brainCoral);
 
         ShapedRecipe bubbleCoral = new ShapedRecipe(new NamespacedKey(this, "emcf_bubbleCoral"), new ItemStack(Material.BUBBLE_CORAL_BLOCK));
-        tubeCoral.shape("CC", "CC").setIngredient('C', Material.BUBBLE_CORAL);
+        bubbleCoral.shape("CC", "CC").setIngredient('C', Material.BUBBLE_CORAL);
         Bukkit.addRecipe(bubbleCoral);
 
         ShapedRecipe fireCoral = new ShapedRecipe(new NamespacedKey(this, "emcf_fireCoral"), new ItemStack(Material.FIRE_CORAL_BLOCK));
-        tubeCoral.shape("CC", "CC").setIngredient('C', Material.FIRE_CORAL);
+        fireCoral.shape("CC", "CC").setIngredient('C', Material.FIRE_CORAL);
         Bukkit.addRecipe(fireCoral);
 
         ShapedRecipe hornCoral = new ShapedRecipe(new NamespacedKey(this, "emcf_hornCoral"), new ItemStack(Material.HORN_CORAL_BLOCK));
-        tubeCoral.shape("CC", "CC").setIngredient('C', Material.HORN_CORAL);
+        hornCoral.shape("CC", "CC").setIngredient('C', Material.HORN_CORAL);
         Bukkit.addRecipe(hornCoral);
     }
 }
