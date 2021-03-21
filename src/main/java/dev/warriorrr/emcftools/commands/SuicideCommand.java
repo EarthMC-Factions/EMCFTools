@@ -35,7 +35,11 @@ public class SuicideCommand implements CommandExecutor {
             return true;
         }
 
-        suicideCooldowns.put(player.getUniqueId(), System.currentTimeMillis() + cooldownTime * 60000);
+        if (suicideCooldowns.containsKey(player.getUniqueId()))
+            suicideCooldowns.replace(player.getUniqueId(), System.currentTimeMillis() + cooldownTime * 1000);
+        else
+            suicideCooldowns.put(player.getUniqueId(), System.currentTimeMillis() + cooldownTime * 1000);
+        
         recentlySuicided.add(player.getUniqueId());
         player.setHealth(0);
         return true;
