@@ -3,9 +3,11 @@ package dev.warriorrr.emcftools;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.warriorrr.emcftools.commands.SuicideCommand;
@@ -68,5 +70,11 @@ public class EMCFTools extends JavaPlugin implements Listener {
         ShapedRecipe hornCoral = new ShapedRecipe(new NamespacedKey(this, "emcf_hornCoral"), new ItemStack(Material.HORN_CORAL_BLOCK));
         hornCoral.shape("CC", "CC").setIngredient('C', Material.HORN_CORAL);
         Bukkit.addRecipe(hornCoral);
+
+        for (Material carpet : Tag.CARPETS.getValues()) {
+            ShapelessRecipe carpetRecipe = new ShapelessRecipe(new NamespacedKey(this, carpet.toString().toLowerCase() + "Recipe"), new ItemStack(carpet, 2));
+            carpetRecipe.addIngredient(carpet);
+            Bukkit.addRecipe(carpetRecipe);
+        }
     }
 }
