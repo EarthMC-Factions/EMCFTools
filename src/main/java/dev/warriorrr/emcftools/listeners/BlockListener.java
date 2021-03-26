@@ -3,13 +3,16 @@ package dev.warriorrr.emcftools.listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.type.Leaves;
 import org.bukkit.block.data.type.SeaPickle;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,7 +20,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.ChatColor;
 import net.prosavage.factionsx.core.Faction;
@@ -129,6 +135,39 @@ public class BlockListener implements Listener {
                 seaPickle.setPickles(pickleAmount);
                 blockState.setBlockData(seaPickle);
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        for (Block block : event.blockList()) {
+            if (block.getType() == Material.SPAWNER) {
+                Location loc = block.getLocation();
+                loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.SPAWNER));
+
+                EntityType spawnerEntity = ((CreatureSpawner) block.getState()).getSpawnedType();
+                if (spawnerEntity.equals(EntityType.PIG) || spawnerEntity.equals(EntityType.UNKNOWN))
+                    return;
+                
+                loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.valueOf(spawnerEntity.toString() + "_SPAWN_EGG")));
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+        if (!event.getEntity().getType().equals(EntityType.WITHER))
+            return;
+        
+        if (event.getBlock().getType() == Material.SPAWNER) {
+            Location loc = event.getBlock().getLocation();
+            loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.SPAWNER));
+
+            EntityType spawnerEntity = ((CreatureSpawner) event.getBlock().getState()).getSpawnedType();
+            if (spawnerEntity.equals(EntityType.PIG) || spawnerEntity.equals(EntityType.UNKNOWN))
+                return;
+            
+            loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.valueOf(spawnerEntity.toString() + "_SPAWN_EGG")));
         }
     }
 
